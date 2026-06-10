@@ -1,44 +1,57 @@
 # MNIST-Style Federated Learning Simulation
 
-## 1. Motivation
+## Motivation
 
-This lab simulates federated learning with the built-in scikit-learn digits dataset because real MNIST download may require internet. The research idea is FedAvg: clients train locally, then the server averages model parameters.
+Federated learning is useful when data is distributed across devices or institutions and should not be collected in one central location. This project simulates that idea with a small handwritten-digit dataset.
 
-## 2. Project Goal
+## Project Goal
 
-Build a small, reproducible AI research lab with clear outputs and honest limitations.
+We simulated federated learning with five clients. Each client trained locally, and the server averaged model parameters after each round.
 
-## 3. Dataset, Paper, Or Problem Description
+## Dataset
 
-Dataset: 8x8 handwritten digits from scikit-learn, used as an offline MNIST-style proxy.
+We used the scikit-learn digits dataset as a small MNIST-style proxy. It contains 8x8 grayscale digit images represented as numeric features. This keeps the experiment runnable without downloading external data.
 
-## 4. Tools
+## Tools
 
-Tools: Python, NumPy, pandas, scikit-learn, matplotlib.
+Python, NumPy, pandas, scikit-learn, and matplotlib.
 
-## 5. Models Or Methods
+## Method
 
-Method: five clients, local SGD logistic regression, parameter averaging.
+The data was split into train and test sets. The training data was divided across five clients. Each client trained an `SGDClassifier` locally, and the server averaged the learned coefficients and intercepts.
 
-## 6. Hyperparameters When Relevant
+## Hyperparameters
 
-Hyperparameters: 5 clients, 5 rounds, eta0=0.01, log-loss SGD, random_state=42.
+- Clients: 5
+- Federated rounds: 5
+- Local model: logistic regression through `SGDClassifier(loss="log_loss")`
+- Learning rate: `eta0=0.01`
+- Test size: 20 percent
+- Random seed: 42
 
-## 7. Results
+## Results
 
-Results include round accuracy, client data sizes, and an accuracy curve.
+| Round | Test Accuracy |
+|---:|---:|
+| 1 | 0.8972 |
+| 2 | 0.9000 |
+| 3 | 0.9083 |
+| 4 | 0.9111 |
+| 5 | 0.9056 |
 
-## 8. Interpretation Of Results
+Results are saved in `results/federated_round_metrics.csv`, `results/client_data_sizes.csv`, and `results/accuracy_by_round.png`.
 
-Interpretation: accuracy should improve across rounds but this is still a simplified FL lab.
+## Interpretation
 
-## 9. Conclusion
+Accuracy improved from round 1 to round 4, then slightly decreased in round 5. This is realistic for a simple simulation: federated averaging can improve the global model, but the process is not automatically monotonic.
 
-Conclusion: federated learning is a training protocol, not a magic model.
+## Conclusion
 
-## 10. How To Run
+The project demonstrates the main idea of federated learning: local training plus server aggregation. A stronger next version should test non-IID client data, more rounds, and client-level drift.
+
+## How To Run
 
 ```bash
 pip install -r requirements.txt
-python 1_*.py
+python 1_federated_digits_simulation.py
 ```
