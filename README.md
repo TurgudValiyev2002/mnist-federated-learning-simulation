@@ -1,5 +1,10 @@
 # MNIST-Style Federated Learning Simulation
 
+![Project overview](assets/readme_project_overview.png)
+
+Figure: federated-learning simulation flow using a local handwritten-digit dataset.
+
+
 ## Motivation
 
 Federated learning is useful when data is distributed across devices or institutions and should not be collected in one central location. This project simulates that idea with a small handwritten-digit dataset.
