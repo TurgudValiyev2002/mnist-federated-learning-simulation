@@ -22,4 +22,4 @@ IID FL can match centralized training because each client sees all digit classes
 
 ## Conclusion
 
-The project now gives a realistic MNIST federated learning comparison. The main conclusion is that data heterogeneity matters more than the averaging formula when clients have equal sample sizes.
+The project gives a realistic MNIST federated learning comparison. The main conclusion is that data heterogeneity matters more than the averaging formula when clients have equal sample sizes.

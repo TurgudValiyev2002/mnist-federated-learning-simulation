@@ -98,7 +98,7 @@ The comparison shows the main lesson of federated learning: the algorithm is not
 
 ## Conclusion
 
-This project now uses real MNIST and compares centralized learning, IID FL, non-IID FL, different client counts, and aggregation methods. The strongest result is that IID FL can match centralized performance, while non-IID FL degrades significantly.
+This project uses real MNIST and compares centralized learning, IID FL, non-IID FL, different client counts, and aggregation methods. The strongest result is that IID FL can match centralized performance, while non-IID FL degrades significantly.
 
 ## How To Run
 
