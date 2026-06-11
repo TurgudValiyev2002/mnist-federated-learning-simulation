@@ -1,0 +1,6 @@
+metric,value
+train_images,60000
+test_images,10000
+rounds,12
+client_counts,"2,5,10"
+aggregations,"weighted_fedavg,uniform_average"

@@ -1,0 +1,2 @@
+model,train_images,test_images,accuracy
+centralized_sgd_logistic,60000,10000,0.9051

@@ -1,21 +1,32 @@
-# MNIST-Style Federated Learning Simulation
+# MNIST Federated Learning: Centralized vs FL
 
 ![Project overview](assets/readme_project_overview.png)
 
-Figure: federated-learning simulation flow using a local handwritten-digit dataset.
-
+Figure: real MNIST is evaluated with a centralized baseline and multiple federated learning settings.
 
 ## Motivation
 
-Federated learning is useful when data is distributed across devices or institutions and should not be collected in one central location. This project simulates that idea with a small handwritten-digit dataset.
+Federated learning should be compared against centralized training and tested under different client settings. A single FL run is not enough because performance changes with the number of clients, IID versus non-IID data, and aggregation strategy.
 
 ## Project Goal
 
-We simulated federated learning with five clients. Each client trained locally, and the server averaged model parameters after each round.
+We trained a real MNIST digit classifier and compared:
+
+- Centralized training
+- Federated learning with 2, 5, and 10 clients
+- IID and non-IID client splits
+- Weighted FedAvg and uniform averaging
 
 ## Dataset
 
-We used the scikit-learn digits dataset as a small MNIST-style proxy. It contains 8x8 grayscale digit images represented as numeric features. This keeps the experiment runnable without downloading external data.
+We used the real MNIST IDX files.
+
+- Training images: 60,000
+- Test images: 10,000
+- Classes: 10 digits
+- Image size: 28x28 grayscale
+
+The raw data is downloaded into `data/`, which is ignored by Git.
 
 ## Tools
 
@@ -23,40 +34,75 @@ Python, NumPy, pandas, scikit-learn, and matplotlib.
 
 ## Method
 
-The data was split into train and test sets. The training data was divided across five clients. Each client trained an `SGDClassifier` locally, and the server averaged the learned coefficients and intercepts.
+The model is a multinomial logistic classifier trained with SGD. In the centralized baseline, one model trains on all 60,000 training images.
+
+In federated learning, each client trains locally for one local step per round. The server aggregates local model parameters after every round. We ran 12 federated rounds.
+
+Aggregation methods:
+
+- Weighted FedAvg: average client parameters by client sample count
+- Uniform averaging: average clients equally
+
+In this experiment, client sizes are equal, so weighted and uniform averaging produce the same final values. The code keeps both methods because they differ when client sizes are unequal.
 
 ## Hyperparameters
 
-- Clients: 5
-- Federated rounds: 5
-- Local model: logistic regression through `SGDClassifier(loss="log_loss")`
-- Learning rate: `eta0=0.01`
-- Test size: 20 percent
-- Random seed: 42
+| Setting | Value |
+|---|---:|
+| Rounds | 12 |
+| Client counts | 2, 5, 10 |
+| Local model | SGD logistic regression |
+| Learning rate | 0.02 |
+| Aggregations | Weighted FedAvg, uniform average |
+| Splits | IID, non-IID |
+| Random seed | 42 |
 
 ## Results
 
-| Round | Test Accuracy |
-|---:|---:|
-| 1 | 0.8972 |
-| 2 | 0.9000 |
-| 3 | 0.9083 |
-| 4 | 0.9111 |
-| 5 | 0.9056 |
+Centralized baseline:
 
-Results are saved in `results/federated_round_metrics.csv`, `results/client_data_sizes.csv`, and `results/accuracy_by_round.png`.
+| Model | Accuracy |
+|---|---:|
+| Centralized SGD logistic | 0.9051 |
+
+Final federated results:
+
+| Clients | Split | Aggregation | Final Accuracy |
+|---:|---|---|---:|
+| 2 | IID | Weighted FedAvg | 0.9121 |
+| 5 | IID | Weighted FedAvg | 0.9097 |
+| 10 | IID | Weighted FedAvg | 0.9027 |
+| 2 | Non-IID | Weighted FedAvg | 0.7192 |
+| 5 | Non-IID | Weighted FedAvg | 0.5660 |
+| 10 | Non-IID | Weighted FedAvg | 0.6312 |
+
+![Accuracy by round](results/accuracy_by_round.png)
+
+![Final accuracy comparison](results/final_accuracy_comparison.png)
+
+Result files:
+
+- `results/centralized_baseline.csv`
+- `results/federated_round_metrics.csv`
+- `results/final_comparison.csv`
+- `results/client_label_distribution.csv`
+- `results/experiment_setup.csv`
 
 ## Interpretation
 
-Accuracy improved from round 1 to round 4, then slightly decreased in round 5. This is realistic for a simple simulation: federated averaging can improve the global model, but the process is not automatically monotonic.
+IID federated learning performs close to centralized training. This means FedAvg works well when every client has a balanced view of the digit classes.
+
+Non-IID federated learning is much harder. Clients see label-skewed data, so their local updates point toward different class subsets. This hurts the global model, especially with 5 clients in this setup.
+
+The comparison shows the main lesson of federated learning: the algorithm is not only about averaging weights. The client data distribution strongly controls the result.
 
 ## Conclusion
 
-The project demonstrates the main idea of federated learning: local training plus server aggregation. A stronger next version should test non-IID client data, more rounds, and client-level drift.
+This project now uses real MNIST and compares centralized learning, IID FL, non-IID FL, different client counts, and aggregation methods. The strongest result is that IID FL can match centralized performance, while non-IID FL degrades significantly.
 
 ## How To Run
 
 ```bash
 pip install -r requirements.txt
-python 1_federated_digits_simulation.py
+python 1_real_mnist_federated_comparison.py
 ```

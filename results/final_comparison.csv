@@ -1,0 +1,13 @@
+clients,split,aggregation,round,test_accuracy
+10,iid,uniform_average,12,0.9027
+10,iid,weighted_fedavg,12,0.9027
+2,non_iid,uniform_average,12,0.7192
+5,iid,weighted_fedavg,12,0.9097
+2,iid,uniform_average,12,0.9121
+2,iid,weighted_fedavg,12,0.9121
+5,non_iid,weighted_fedavg,12,0.566
+5,non_iid,uniform_average,12,0.566
+5,iid,uniform_average,12,0.9097
+2,non_iid,weighted_fedavg,12,0.7192
+10,non_iid,weighted_fedavg,12,0.6312
+10,non_iid,uniform_average,12,0.6312

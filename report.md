@@ -1,29 +1,25 @@
-# Report: MNIST-Style Federated Learning Simulation
+# One-Page Report: Real MNIST Federated Learning
 
 ## Motivation
 
-We simulated federated learning to understand how multiple clients can train locally while sharing only model updates.
+We wanted a stronger federated learning experiment using real MNIST, not a small proxy dataset. The goal was to compare centralized training with federated learning under IID and non-IID client splits.
 
 ## Dataset
 
-The experiment used the scikit-learn digits dataset, an 8x8 handwritten-digit dataset that works as a small MNIST-style proxy.
+The experiment uses real MNIST with 60,000 training images and 10,000 test images. Each image is a 28x28 grayscale digit.
 
 ## Method
 
-Training data was split across five clients. Each client trained an SGD logistic model, and the server averaged model parameters for five rounds.
-
-## Hyperparameters
-
-We used 5 clients, 5 federated rounds, `SGDClassifier(loss="log_loss")`, learning rate `eta0=0.01`, and random seed 42.
+We trained a centralized SGD logistic classifier and federated versions with 2, 5, and 10 clients. Federated learning used 12 rounds. We compared IID and non-IID splits plus weighted FedAvg and uniform averaging.
 
 ## Results
 
-Test accuracy moved from 0.8972 in round 1 to 0.9111 in round 4, then finished at 0.9056 in round 5.
+The centralized baseline achieved 0.9051 accuracy. IID federated learning reached 0.9121 with 2 clients, 0.9097 with 5 clients, and 0.9027 with 10 clients. Non-IID federated learning was weaker: 0.7192 with 2 clients, 0.5660 with 5 clients, and 0.6312 with 10 clients.
 
 ## Interpretation
 
-The global model improved overall, but the final small drop shows that federated training can fluctuate. More rounds and better local optimization would be needed for a stronger result.
+IID FL can match centralized training because each client sees all digit classes. Non-IID FL is much harder because clients train on skewed label distributions, causing local updates to conflict.
 
 ## Conclusion
 
-This project gives a simple working view of federated averaging. The next improvement should be non-IID client splits.
+The project now gives a realistic MNIST federated learning comparison. The main conclusion is that data heterogeneity matters more than the averaging formula when clients have equal sample sizes.
